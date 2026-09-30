@@ -1,0 +1,43 @@
+{
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "K01",
+      "character": "kangyan",
+      "title": "开远门·过所",
+      "video": "assets/video/kangyan/K01.mp4",
+      "duration": null,
+      "choices": [
+        {
+          "id": "A",
+          "text": "立即出示过所",
+          "effects": {
+            "reputation": 5,
+            "risk": -5
+          },
+          "nextNode": "K02"
+        },
+        {
+          "id": "B",
+          "text": "主动配合查验",
+          "effects": {
+            "reputation": 3,
+            "risk": -5,
+            "timePressure": 8
+          },
+          "nextNode": "K02"
+        },
+        {
+          "id": "C",
+          "text": "冒用他人文书",
+          "effects": {
+            "reputation": -15,
+            "risk": 30,
+            "timePressure": 15
+          },
+          "nextNode": "K02"
+        }
+      ]
+    }
+  ]
+}

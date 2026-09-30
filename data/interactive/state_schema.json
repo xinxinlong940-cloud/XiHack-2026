@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Interactive Video State",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "reputation": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 50
+    },
+    "cash": {
+      "type": "integer",
+      "default": 100
+    },
+    "risk": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 0
+    },
+    "timePressure": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 0
+    },
+    "relationships": {
+      "type": "object",
+      "default": {},
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": -2,
+        "maximum": 2
+      }
+    },
+    "kangyan": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "debtBalance": {
+          "type": "integer",
+          "default": 500
+        }
+      },
+      "required": ["debtBalance"],
+      "default": {
+        "debtBalance": 500
+      }
+    },
+    "ajiu": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "nameValue": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3,
+          "default": 0
+        }
+      },
+      "required": ["nameValue"],
+      "default": {
+        "nameValue": 0
+      }
+    },
+    "alang": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "informationValue": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3,
+          "default": 0
+        }
+      },
+      "required": ["informationValue"],
+      "default": {
+        "informationValue": 0
+      }
+    },
+    "storyFlags": {
+      "type": "object",
+      "default": {}
+    }
+  },
+  "required": [
+    "reputation",
+    "cash",
+    "risk",
+    "timePressure",
+    "relationships",
+    "kangyan",
+    "ajiu",
+    "alang",
+    "storyFlags"
+  ]
+}
