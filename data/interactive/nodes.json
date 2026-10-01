@@ -9,7 +9,7 @@
       "duration": null,
       "choices": [
         {
-          "id": "A",
+          "id": "K01_A",
           "text": "立即出示过所",
           "effects": {
             "reputation": 5,
@@ -18,7 +18,7 @@
           "nextNode": "K02"
         },
         {
-          "id": "B",
+          "id": "K01_B",
           "text": "主动配合查验",
           "effects": {
             "reputation": 3,
@@ -28,7 +28,7 @@
           "nextNode": "K02"
         },
         {
-          "id": "C",
+          "id": "K01_C",
           "text": "冒用他人文书",
           "effects": {
             "reputation": -15,
@@ -36,6 +36,139 @@
             "timePressure": 15
           },
           "nextNode": "K02"
+        }
+      ]
+    },
+    {
+      "id": "K02",
+      "character": "kangyan",
+      "title": "市署·初入西市",
+      "video": "assets/video/kangyan/K02.mp4",
+      "duration": null,
+      "choices": [
+        {
+          "id": "K02_A",
+          "text": "如实说明",
+          "effects": {
+            "reputation": 8,
+            "risk": -3
+          },
+          "nextNode": "K03"
+        },
+        {
+          "id": "K02_B",
+          "text": "保留部分信息",
+          "effects": {
+            "reputation": 0,
+            "risk": -2
+          },
+          "nextNode": "K03"
+        },
+        {
+          "id": "K02_C",
+          "text": "夸大自己的关系",
+          "effects": {
+            "reputation": -8,
+            "risk": 15
+          },
+          "nextNode": "K03"
+        }
+      ]
+    },
+    {
+      "id": "K03",
+      "character": "kangyan",
+      "title": "波斯邸·叔父留下的账",
+      "video": "assets/video/kangyan/K03.mp4",
+      "duration": null,
+      "choices": [
+        {
+          "id": "K03_A",
+          "text": "立即换钱",
+          "effects": {
+            "cash": 20,
+            "timePressure": -5
+          },
+          "nextNode": "K04"
+        },
+        {
+          "id": "K03_B",
+          "text": "与老胡商谈条件",
+          "effects": {
+            "cash": 30,
+            "timePressure": 10
+          },
+          "conditionalEffects": [
+            {
+              "conditions": {
+                "reputation": {
+                  "min": 60
+                }
+              },
+              "effects": {
+                "storyFlags": {
+                  "oldMerchantConnection": true
+                }
+              }
+            }
+          ],
+          "nextNode": "K04"
+        },
+        {
+          "id": "K03_C",
+          "text": "只换一部分",
+          "effects": {
+            "cash": 5,
+            "risk": 10
+          },
+          "nextNode": "K04"
+        }
+      ]
+    },
+    {
+      "id": "K04",
+      "character": "kangyan",
+      "title": "绢行·要不要借？",
+      "video": "assets/video/kangyan/K04.mp4",
+      "duration": null,
+      "choices": [
+        {
+          "id": "K04_A",
+          "text": "以货物作质、寻找担保",
+          "effects": {
+            "cash": 30,
+            "kangyan": {
+              "debtBalance": 30
+            },
+            "risk": 10
+          },
+          "nextNode": "S01"
+        },
+        {
+          "id": "K04_B",
+          "text": "少买一些",
+          "effects": {
+            "cash": 5,
+            "risk": -5,
+            "timePressure": 8
+          },
+          "nextNode": "S01"
+        },
+        {
+          "id": "K04_C",
+          "text": "请求赊货",
+          "conditions": {
+            "reputation": {
+              "min": 60
+            }
+          },
+          "effects": {
+            "kangyan": {
+              "debtBalance": 20
+            },
+            "risk": 5
+          },
+          "nextNode": "S01"
         }
       ]
     }
