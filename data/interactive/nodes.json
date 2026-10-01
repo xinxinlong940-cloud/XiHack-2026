@@ -2,175 +2,840 @@
   "version": "1.0.0",
   "nodes": [
     {
+      "id": "P01",
+      "character": "shared",
+      "title": "西市开市与角色选择",
+      "type": "choice",
+      "video_placeholder": "assets/video/shared/P01.mp4",
+      "choices": [
+        {
+          "id": "P01_A",
+          "text": "选择康延",
+          "effect_description": "不改变数值；确定康延视角；镜头跟随康延。",
+          "effects": {},
+          "next_node": "K01"
+        },
+        {
+          "id": "P01_B",
+          "text": "选择阿九",
+          "effect_description": "不改变数值；确定阿九视角；镜头跟随阿九。",
+          "effects": {},
+          "next_node": "J01"
+        },
+        {
+          "id": "P01_C",
+          "text": "选择阿郎",
+          "effect_description": "不改变数值；确定阿郎视角；镜头跟随阿郎。",
+          "effects": {},
+          "next_node": "A01"
+        }
+      ],
+      "next": [
+        "K01",
+        "J01",
+        "A01"
+      ]
+    },
+    {
       "id": "K01",
       "character": "kangyan",
-      "title": "开远门·过所",
-      "video": "assets/video/kangyan/K01.mp4",
-      "duration": null,
+      "title": "开远门·第一次进入长安",
+      "type": "choice",
+      "video_placeholder": "assets/video/kangyan/K01.mp4",
       "choices": [
         {
           "id": "K01_A",
-          "text": "立即出示过所",
+          "text": "如实说明",
+          "effect_description": "reputation +5；检查人员认可其回答并放行。",
           "effects": {
-            "reputation": 5,
-            "risk": -5
+            "reputation": {
+              "operation": "add",
+              "value": 5
+            }
           },
-          "nextNode": "K02"
+          "next_node": "K02"
         },
         {
           "id": "K01_B",
-          "text": "主动配合查验",
-          "effects": {
-            "reputation": 3,
-            "risk": -5,
-            "timePressure": 8
-          },
-          "nextNode": "K02"
+          "text": "只说必要的信息",
+          "effect_description": "reputation +0；检查人员没有继续追问并放行。",
+          "effects": {},
+          "next_node": "K02"
         },
         {
           "id": "K01_C",
-          "text": "冒用他人文书",
+          "text": "夸大自己的关系",
+          "effect_description": "reputation -5；risk +10；康延获准入城，但留下风险。",
           "effects": {
-            "reputation": -15,
-            "risk": 30,
-            "timePressure": 15
+            "reputation": {
+              "operation": "add",
+              "value": -5
+            },
+            "risk": {
+              "operation": "add",
+              "value": 10
+            }
           },
-          "nextNode": "K02"
+          "next_node": "K02"
         }
+      ],
+      "next": [
+        "K02"
       ]
     },
     {
       "id": "K02",
       "character": "kangyan",
-      "title": "市署·初入西市",
-      "video": "assets/video/kangyan/K02.mp4",
-      "duration": null,
+      "title": "市署·第一次卖货",
+      "type": "choice",
+      "video_placeholder": "assets/video/kangyan/K02.mp4",
       "choices": [
         {
           "id": "K02_A",
-          "text": "如实说明",
+          "text": "如实说明货源",
+          "effect_description": "reputation +5；老商人愿意下次有货再谈。",
           "effects": {
-            "reputation": 8,
-            "risk": -3
+            "reputation": {
+              "operation": "add",
+              "value": 5
+            }
           },
-          "nextNode": "K03"
+          "next_node": "K03"
         },
         {
           "id": "K02_B",
-          "text": "保留部分信息",
+          "text": "只说必要信息",
+          "effect_description": "alang.informationValue +1；完成本次交易，但没有下一次合作承诺。",
           "effects": {
-            "reputation": 0,
-            "risk": -2
+            "alang.informationValue": {
+              "operation": "add",
+              "value": 1
+            }
           },
-          "nextNode": "K03"
+          "next_node": "K03"
         },
         {
           "id": "K02_C",
-          "text": "夸大自己的关系",
+          "text": "夸大人脉",
+          "effect_description": "reputation -5；risk +10；未来预期被抬高。",
           "effects": {
-            "reputation": -8,
-            "risk": 15
+            "reputation": {
+              "operation": "add",
+              "value": -5
+            },
+            "risk": {
+              "operation": "add",
+              "value": 10
+            }
           },
-          "nextNode": "K03"
+          "next_node": "K03"
         }
+      ],
+      "next": [
+        "K03"
       ]
     },
     {
       "id": "K03",
       "character": "kangyan",
       "title": "波斯邸·叔父留下的账",
-      "video": "assets/video/kangyan/K03.mp4",
-      "duration": null,
+      "type": "choice",
+      "video_placeholder": "assets/video/kangyan/K03.mp4",
       "choices": [
         {
           "id": "K03_A",
-          "text": "立即换钱",
+          "text": "认账，先偿还一部分",
+          "effect_description": "kangyan.debtBalance 500 → 400；reputation +10；risk -5。",
           "effects": {
-            "cash": 20,
-            "timePressure": -5
+            "kangyan.debtBalance": {
+              "operation": "set",
+              "value": 400
+            },
+            "reputation": {
+              "operation": "add",
+              "value": 10
+            },
+            "risk": {
+              "operation": "add",
+              "value": -5
+            }
           },
-          "nextNode": "K04"
+          "next_node": "K04"
         },
         {
           "id": "K03_B",
-          "text": "与老胡商谈条件",
+          "text": "拿货作抵押，请求延期",
+          "effect_description": "kangyan.debtBalance = 500；risk +10；storyFlags.debtExtension = true。",
           "effects": {
-            "cash": 30,
-            "timePressure": 10
-          },
-          "conditionalEffects": [
-            {
-              "conditions": {
-                "reputation": {
-                  "min": 60
-                }
-              },
-              "effects": {
-                "storyFlags": {
-                  "oldMerchantConnection": true
-                }
-              }
+            "kangyan.debtBalance": {
+              "operation": "set",
+              "value": 500
+            },
+            "risk": {
+              "operation": "add",
+              "value": 10
+            },
+            "storyFlags.debtExtension": {
+              "operation": "set",
+              "value": true
             }
-          ],
-          "nextNode": "K04"
+          },
+          "next_node": "K04"
         },
         {
           "id": "K03_C",
-          "text": "只换一部分",
+          "text": "不承认这笔债务",
+          "effect_description": "reputation -10；risk +15。",
           "effects": {
-            "cash": 5,
-            "risk": 10
+            "reputation": {
+              "operation": "add",
+              "value": -10
+            },
+            "risk": {
+              "operation": "add",
+              "value": 15
+            }
           },
-          "nextNode": "K04"
+          "next_node": "K04"
         }
+      ],
+      "next": [
+        "K04"
       ]
     },
     {
       "id": "K04",
       "character": "kangyan",
-      "title": "绢行·要不要借？",
-      "video": "assets/video/kangyan/K04.mp4",
-      "duration": null,
+      "title": "绢行·我还能借到货吗？",
+      "type": "choice",
+      "video_placeholder": "assets/video/kangyan/K04.mp4",
       "choices": [
         {
           "id": "K04_A",
-          "text": "以货物作质、寻找担保",
+          "text": "拿货物和担保换更多货",
+          "effect_description": "cash +30；kangyan.debtBalance +30；risk +10。",
           "effects": {
-            "cash": 30,
-            "kangyan": {
-              "debtBalance": 30
+            "cash": {
+              "operation": "add",
+              "value": 30
             },
-            "risk": 10
+            "kangyan.debtBalance": {
+              "operation": "add",
+              "value": 30
+            },
+            "risk": {
+              "operation": "add",
+              "value": 10
+            }
           },
-          "nextNode": "S01"
+          "next_node": "S01"
         },
         {
           "id": "K04_B",
-          "text": "少买一些",
+          "text": "少买一点",
+          "effect_description": "cash +5；risk -5；timePressure +8。",
           "effects": {
-            "cash": 5,
-            "risk": -5,
-            "timePressure": 8
+            "cash": {
+              "operation": "add",
+              "value": 5
+            },
+            "risk": {
+              "operation": "add",
+              "value": -5
+            },
+            "timePressure": {
+              "operation": "add",
+              "value": 8
+            }
           },
-          "nextNode": "S01"
+          "next_node": "S01"
         },
         {
           "id": "K04_C",
           "text": "请求赊货",
-          "conditions": {
-            "reputation": {
-              "min": 60
+          "effect_description": "条件 reputation >= 60。成功：kangyan.debtBalance +20、reputation +10；失败：reputation -5、risk +10。",
+          "effects": {},
+          "condition": {
+            "expression": {
+              "field": "reputation",
+              "operator": ">=",
+              "value": 60
+            },
+            "evaluation": "before_effects",
+            "on_true": {
+              "effects": {
+                "kangyan.debtBalance": {
+                  "operation": "add",
+                  "value": 20
+                },
+                "reputation": {
+                  "operation": "add",
+                  "value": 10
+                }
+              }
+            },
+            "on_false": {
+              "effects": {
+                "reputation": {
+                  "operation": "add",
+                  "value": -5
+                },
+                "risk": {
+                  "operation": "add",
+                  "value": 10
+                }
+              }
             }
           },
-          "effects": {
-            "kangyan": {
-              "debtBalance": 20
-            },
-            "risk": 5
-          },
-          "nextNode": "S01"
+          "next_node": "S01"
         }
+      ],
+      "next": [
+        "S01"
       ]
+    },
+    {
+      "id": "J01",
+      "character": "ajiu",
+      "title": "留下名字",
+      "type": "choice",
+      "video_placeholder": "assets/video/ajiu/J01.mp4",
+      "choices": [
+        {
+          "id": "J01_A",
+          "text": "留下“阿九”",
+          "effect_description": "ajiu.nameValue +1；客人记住“阿九”这个名字。",
+          "effects": {
+            "ajiu.nameValue": {
+              "operation": "add",
+              "value": 1
+            }
+          },
+          "next_node": "J02"
+        },
+        {
+          "id": "J01_B",
+          "text": "不留名字",
+          "effect_description": "ajiu.nameValue +0；东西卖掉，但没有留下制作人的名字。",
+          "effects": {},
+          "next_node": "J02"
+        },
+        {
+          "id": "J01_C",
+          "text": "声称官造",
+          "effect_description": "risk +15；客人继续追问，阿九无法很好解释。",
+          "effects": {
+            "risk": {
+              "operation": "add",
+              "value": 15
+            }
+          },
+          "next_node": "J02"
+        }
+      ],
+      "next": [
+        "J02"
+      ]
+    },
+    {
+      "id": "J02",
+      "character": "ajiu",
+      "title": "客户要的，和我想做的",
+      "type": "choice",
+      "video_placeholder": "assets/video/ajiu/J02.mp4",
+      "choices": [
+        {
+          "id": "J02_A",
+          "text": "认真修改",
+          "effect_description": "ajiu.nameValue +1；第二版符合客户需求。",
+          "effects": {
+            "ajiu.nameValue": {
+              "operation": "add",
+              "value": 1
+            }
+          },
+          "next_node": "J03"
+        },
+        {
+          "id": "J02_B",
+          "text": "做简单版本",
+          "effect_description": "cash +10；客户接受普通版本。",
+          "effects": {
+            "cash": {
+              "operation": "add",
+              "value": 10
+            }
+          },
+          "next_node": "J03"
+        },
+        {
+          "id": "J02_C",
+          "text": "模仿竞争对手",
+          "effect_description": "cash +20；ajiu.nameValue -1；risk +10；客户认出已有样式。",
+          "effects": {
+            "cash": {
+              "operation": "add",
+              "value": 20
+            },
+            "ajiu.nameValue": {
+              "operation": "add",
+              "value": -1
+            },
+            "risk": {
+              "operation": "add",
+              "value": 10
+            }
+          },
+          "next_node": "J03"
+        }
+      ],
+      "next": [
+        "J03"
+      ]
+    },
+    {
+      "id": "J03",
+      "character": "ajiu",
+      "title": "名字带来的责任",
+      "type": "choice",
+      "video_placeholder": "assets/video/ajiu/J03.mp4",
+      "choices": [
+        {
+          "id": "J03_A",
+          "text": "承认问题并处理",
+          "effect_description": "ajiu.nameValue +1；承担并处理问题。",
+          "effects": {
+            "ajiu.nameValue": {
+              "operation": "add",
+              "value": 1
+            }
+          },
+          "next_node": "J04"
+        },
+        {
+          "id": "J03_B",
+          "text": "先不承认责任",
+          "effect_description": "状态不变化；客户保留疑问。",
+          "effects": {},
+          "next_node": "J04"
+        },
+        {
+          "id": "J03_C",
+          "text": "否认自己制作",
+          "effect_description": "ajiu.nameValue -1；名字信誉受损。",
+          "effects": {
+            "ajiu.nameValue": {
+              "operation": "add",
+              "value": -1
+            }
+          },
+          "next_node": "J04"
+        }
+      ],
+      "next": [
+        "J04"
+      ]
+    },
+    {
+      "id": "J04",
+      "character": "ajiu",
+      "title": "订单",
+      "type": "choice",
+      "video_placeholder": "assets/video/ajiu/J04.mp4",
+      "choices": [
+        {
+          "id": "J04_A",
+          "text": "承认身份",
+          "effect_description": "ajiu.nameValue +1；结算后 ajiu.nameValue >= 2 时，storyFlags.ajiuLongOrder = true。",
+          "effects": {
+            "ajiu.nameValue": {
+              "operation": "add",
+              "value": 1
+            }
+          },
+          "condition": {
+            "expression": {
+              "field": "ajiu.nameValue",
+              "operator": ">=",
+              "value": 2
+            },
+            "evaluation": "after_effects",
+            "on_true": {
+              "effects": {
+                "storyFlags.ajiuLongOrder": {
+                  "operation": "set",
+                  "value": true
+                }
+              }
+            },
+            "on_false": {
+              "effects": {}
+            }
+          },
+          "next_node": "S01"
+        },
+        {
+          "id": "J04_B",
+          "text": "只卖这一件",
+          "effect_description": "cash +20；不建立长期订单旗标。",
+          "effects": {
+            "cash": {
+              "operation": "add",
+              "value": 20
+            }
+          },
+          "next_node": "S01"
+        },
+        {
+          "id": "J04_C",
+          "text": "一次性卖断",
+          "effect_description": "cash +35；ajiu.nameValue -1。",
+          "effects": {
+            "cash": {
+              "operation": "add",
+              "value": 35
+            },
+            "ajiu.nameValue": {
+              "operation": "add",
+              "value": -1
+            }
+          },
+          "next_node": "S01"
+        }
+      ],
+      "next": [
+        "S01"
+      ]
+    },
+    {
+      "id": "A01",
+      "character": "alang",
+      "title": "估价",
+      "type": "choice",
+      "video_placeholder": "assets/video/alang/A01.mp4",
+      "choices": [
+        {
+          "id": "A01_A",
+          "text": "仔细判断",
+          "effect_description": "alang.informationValue +1；引用个人观察到的同类交易价格。",
+          "effects": {
+            "alang.informationValue": {
+              "operation": "add",
+              "value": 1
+            }
+          },
+          "next_node": "A02"
+        },
+        {
+          "id": "A01_B",
+          "text": "直接接受卖方报价",
+          "effect_description": "cash +10；按卖方报价推进交易。",
+          "effects": {
+            "cash": {
+              "operation": "add",
+              "value": 10
+            }
+          },
+          "next_node": "A02"
+        },
+        {
+          "id": "A01_C",
+          "text": "强行压价",
+          "effect_description": "cash +15；reputation -5。",
+          "effects": {
+            "cash": {
+              "operation": "add",
+              "value": 15
+            },
+            "reputation": {
+              "operation": "add",
+              "value": -5
+            }
+          },
+          "next_node": "A02"
+        }
+      ],
+      "next": [
+        "A02"
+      ]
+    },
+    {
+      "id": "A02",
+      "character": "alang",
+      "title": "撮合",
+      "type": "choice",
+      "video_placeholder": "assets/video/alang/A02.mp4",
+      "choices": [
+        {
+          "id": "A02_A",
+          "text": "平衡双方",
+          "effect_description": "reputation +5；alang.informationValue +1。",
+          "effects": {
+            "reputation": {
+              "operation": "add",
+              "value": 5
+            },
+            "alang.informationValue": {
+              "operation": "add",
+              "value": 1
+            }
+          },
+          "next_node": "A03"
+        },
+        {
+          "id": "A02_B",
+          "text": "偏向熟人",
+          "effect_description": "对应熟人的 relationships +1；reputation -5。",
+          "effects": {
+            "relationships.familiarParty": {
+              "operation": "add",
+              "value": 1
+            },
+            "reputation": {
+              "operation": "add",
+              "value": -5
+            }
+          },
+          "next_node": "A03"
+        },
+        {
+          "id": "A02_C",
+          "text": "退出",
+          "effect_description": "timePressure +10；交易拖延。",
+          "effects": {
+            "timePressure": {
+              "operation": "add",
+              "value": 10
+            }
+          },
+          "next_node": "A03"
+        }
+      ],
+      "next": [
+        "A03"
+      ]
+    },
+    {
+      "id": "A03",
+      "character": "alang",
+      "title": "公平还是关系",
+      "type": "choice",
+      "video_placeholder": "assets/video/alang/A03.mp4",
+      "choices": [
+        {
+          "id": "A03_A",
+          "text": "公开核对",
+          "effect_description": "reputation +5；建议重新验秤或请有权限的人核对。",
+          "effects": {
+            "reputation": {
+              "operation": "add",
+              "value": 5
+            }
+          },
+          "next_node": "A04"
+        },
+        {
+          "id": "A03_B",
+          "text": "私下调和",
+          "effect_description": "对应熟人的 relationships +1。",
+          "effects": {
+            "relationships.familiarParty": {
+              "operation": "add",
+              "value": 1
+            }
+          },
+          "next_node": "A04"
+        },
+        {
+          "id": "A03_C",
+          "text": "不管",
+          "effect_description": "reputation -10；risk +10。",
+          "effects": {
+            "reputation": {
+              "operation": "add",
+              "value": -10
+            },
+            "risk": {
+              "operation": "add",
+              "value": 10
+            }
+          },
+          "next_node": "A04"
+        }
+      ],
+      "next": [
+        "A04"
+      ]
+    },
+    {
+      "id": "A04",
+      "character": "alang",
+      "title": "信息",
+      "type": "choice",
+      "video_placeholder": "assets/video/alang/A04.mp4",
+      "choices": [
+        {
+          "id": "A04_A",
+          "text": "拿记录出来，用事实说话",
+          "effect_description": "alang.informationValue +1；展示个人记录。",
+          "effects": {
+            "alang.informationValue": {
+              "operation": "add",
+              "value": 1
+            }
+          },
+          "next_node": "S01"
+        },
+        {
+          "id": "A04_B",
+          "text": "只说自己的判断",
+          "effect_description": "状态基本不变化；不出示记录。",
+          "effects": {},
+          "next_node": "S01"
+        },
+        {
+          "id": "A04_C",
+          "text": "隐藏信息",
+          "effect_description": "alang.informationValue -1；risk +10。",
+          "effects": {
+            "alang.informationValue": {
+              "operation": "add",
+              "value": -1
+            },
+            "risk": {
+              "operation": "add",
+              "value": 10
+            }
+          },
+          "next_node": "S01"
+        }
+      ],
+      "next": [
+        "S01"
+      ]
+    },
+    {
+      "id": "S01",
+      "character": "shared",
+      "title": "同一笔订单",
+      "type": "linear",
+      "video_placeholder": "assets/video/shared/S01.mp4",
+      "choices": [],
+      "next": [
+        "S02"
+      ]
+    },
+    {
+      "id": "S02",
+      "character": "shared",
+      "title": "六件还是十件",
+      "type": "linear",
+      "video_placeholder": "assets/video/shared/S02.mp4",
+      "choices": [],
+      "next": [
+        "S03"
+      ]
+    },
+    {
+      "id": "S03",
+      "character": "shared",
+      "title": "买方压价",
+      "type": "linear",
+      "video_placeholder": "assets/video/shared/S03.mp4",
+      "choices": [],
+      "next": [
+        "S04"
+      ]
+    },
+    {
+      "id": "S04",
+      "character": "shared",
+      "title": "三人最终合议",
+      "type": "choice",
+      "video_placeholder": "assets/video/shared/S04.mp4",
+      "choices": [
+        {
+          "id": "S04_A",
+          "text": "马上成交",
+          "effect_description": "六件先卖；获得即时现金，但长期利益较低。",
+          "effects": {},
+          "next_node": "END01"
+        },
+        {
+          "id": "S04_B",
+          "text": "坚持原价",
+          "effect_description": "交易暂时搁置；复用 END01 的生活收束素材，不表示交易已经完成。",
+          "effects": {},
+          "next_node": "END01"
+        },
+        {
+          "id": "S04_C",
+          "text": "重新谈条件",
+          "effect_description": "六件先交、四件后补；形成长期合作机会。满足 reputation >= 60、ajiu.nameValue >= 2、alang.informationValue >= 2 时进入 END03，否则进入 END02。",
+          "effects": {},
+          "condition": {
+            "expression": {
+              "all": [
+                {
+                  "field": "reputation",
+                  "operator": ">=",
+                  "value": 60
+                },
+                {
+                  "field": "ajiu.nameValue",
+                  "operator": ">=",
+                  "value": 2
+                },
+                {
+                  "field": "alang.informationValue",
+                  "operator": ">=",
+                  "value": 2
+                }
+              ]
+            },
+            "evaluation": "after_effects",
+            "on_true": {
+              "next_node": "END03"
+            },
+            "on_false": {
+              "next_node": "END02"
+            }
+          },
+          "next_node": "END02"
+        }
+      ],
+      "next": [
+        "END01",
+        "END02",
+        "END03"
+      ]
+    },
+    {
+      "id": "END01",
+      "character": "shared",
+      "title": "各自站稳",
+      "type": "ending",
+      "video_placeholder": "assets/video/endings/END01.mp4",
+      "choices": [],
+      "next": []
+    },
+    {
+      "id": "END02",
+      "character": "shared",
+      "title": "一笔交易，三种人生",
+      "type": "ending",
+      "video_placeholder": "assets/video/endings/END02.mp4",
+      "choices": [],
+      "next": []
+    },
+    {
+      "id": "END03",
+      "character": "shared",
+      "title": "真结局",
+      "type": "ending",
+      "video_placeholder": "assets/video/endings/END03.mp4",
+      "choices": [],
+      "next": []
     }
   ]
 }
