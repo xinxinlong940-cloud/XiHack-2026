@@ -74,7 +74,10 @@ export default function App() {
   const [ready, setReady] = useState(false)
   const [mediaFailed, setMediaFailed] = useState(false)
   const [branchVideo, setBranchVideo] = useState(null)
+  const [holdPublicVideo, setHoldPublicVideo] = useState(false)
   const branchPlaying = useRef(false)
+  const choiceCheckpoint = useRef(null)
+  const returningToChoice = useRef(false)
   const [statusOpen, setStatusOpen] = useState(false)
   const [toast, setToast] = useState([])
   const [transitionTitle, setTransitionTitle] = useState('')
@@ -86,7 +89,10 @@ export default function App() {
     timers.current.forEach(clearTimeout)
   }, [])
   useEffect(() => {
-    setReady(false); setMediaFailed(false); setStatusOpen(false)
+    const restoreChoice = returningToChoice.current
+    returningToChoice.current = false
+    setReady(restoreChoice); setMediaFailed(false); setStatusOpen(false)
+    setHoldPublicVideo(restoreChoice)
     setBranchVideo(null); branchPlaying.current = false
   }, [nodeId])
   function schedule(callback, delay) { timers.current.push(setTimeout(callback, delay)) }
@@ -111,10 +117,12 @@ export default function App() {
   }
   function choose(choice) {
     if (transitioning.current || branchPlaying.current) return
+    if (nodeId === 'K01') choiceCheckpoint.current = { playerState, character: currentCharacter }
     const result = resolveChoice(playerState, choice, state.value)
     setPlayerState(result.playerState)
     if (nodeId === 'K01' && choiceVideos[choice.id]) {
       branchPlaying.current = true
+      setHoldPublicVideo(false)
       setReady(false)
       setMediaFailed(false)
       setBranchVideo({ url: choiceVideos[choice.id], nextNode: result.nextNode })
@@ -132,6 +140,8 @@ export default function App() {
     timers.current = []
     transitioning.current = false
     branchPlaying.current = false
+    choiceCheckpoint.current = null
+    setHoldPublicVideo(false)
     setBranchVideo(null)
     if (reset) setPlayerState(createInitialState(state.value))
     setNodeId('P01')
@@ -141,6 +151,26 @@ export default function App() {
     setTransitionTitle('')
     setStatusOpen(false)
     setScreen('selection')
+  }
+
+  function returnToLastChoice() {
+    const checkpoint = choiceCheckpoint.current
+    if (!checkpoint || transitioning.current) return
+    timers.current.forEach(clearTimeout)
+    timers.current = []
+    transitioning.current = false
+    branchPlaying.current = false
+    returningToChoice.current = true
+    setPlayerState(checkpoint.playerState)
+    setCurrentCharacter(checkpoint.character)
+    setBranchVideo(null)
+    setHoldPublicVideo(true)
+    setReady(true)
+    setMediaFailed(false)
+    setStatusOpen(false)
+    setToast([])
+    setNodeId('K01')
+    setScreen('story')
   }
 
   const error = story.error || state.error || (!nodesById.P01 && '缺少起始节点 P01。')
@@ -182,6 +212,9 @@ export default function App() {
   const isChoice = node.type === 'choice'
   const isEnding = node.type === 'ending'
   const isK01PublicVideo = node.id === 'K01'
+  const canReturnToLastChoice = Boolean(
+    choiceCheckpoint.current && currentCharacter === 'kangyan' && (nodeId !== 'K01' || branchVideo),
+  )
   const showOverlay = !branchVideo && (ready || (!hasVideo && isEnding))
   const chapter = node.character === 'shared' ? '共同篇章' : displayNames[currentCharacter] ?? displayNames[node.character]
   function videoEnded(event) {
@@ -195,16 +228,23 @@ export default function App() {
     if (node.type === 'linear' && node.next?.[0]) goTo(node.next[0])
     else setReady(true)
   }
+  function publicVideoLoaded(event) {
+    if (!holdPublicVideo) return
+    event.currentTarget.currentTime = event.currentTarget.duration
+    event.currentTarget.pause()
+  }
   return (
     <main className="app stage-screen">
       <header className="stage-header">
+        {canReturnToLastChoice && <button className="back-choice" type="button" onClick={returnToLastChoice}>‹ 返回上个选择</button>}
         <span className="stage-header__brand">《大唐西市》</span>
         <span className="stage-meta">{chapter} · {node.id}</span>
         {!isK01PublicVideo && <button className="status-toggle" type="button" aria-expanded={statusOpen} onClick={() => setStatusOpen(!statusOpen)}>状态</button>}
       </header>
       <section className="cinema-stage" aria-label={node.title}>
         {hasVideo ? (
-          <video key={branchVideo?.url ?? node.id} className="cinema-video" src={videoUrl} autoPlay muted playsInline controls
+          <video key={branchVideo?.url ?? node.id} className="cinema-video" src={videoUrl} autoPlay={!holdPublicVideo} muted playsInline controls
+            onLoadedMetadata={isK01PublicVideo && !branchVideo ? publicVideoLoaded : undefined}
             onEnded={videoEnded} onError={() => setMediaFailed(true)} aria-label={node.title} />
         ) : (
           <div className="cinema-placeholder">

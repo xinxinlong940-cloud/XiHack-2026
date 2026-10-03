@@ -53,71 +53,19 @@
               "value": 5
             }
           },
-          "next_node": "K02"
+          "next_node": "K03"
         },
         {
           "id": "K01_B",
           "text": "只说必要的信息",
           "effect_description": "reputation +0；检查人员没有继续追问并放行。",
           "effects": {},
-          "next_node": "K02"
+          "next_node": "K03"
         },
         {
           "id": "K01_C",
           "text": "夸大自己的关系",
           "effect_description": "reputation -5；risk +10；康延获准入城，但留下风险。",
-          "effects": {
-            "reputation": {
-              "operation": "add",
-              "value": -5
-            },
-            "risk": {
-              "operation": "add",
-              "value": 10
-            }
-          },
-          "next_node": "K02"
-        }
-      ],
-      "next": [
-        "K02"
-      ]
-    },
-    {
-      "id": "K02",
-      "character": "kangyan",
-      "title": "市署·第一次卖货",
-      "type": "choice",
-      "video_placeholder": "assets/video/kangyan/K02.mp4",
-      "choices": [
-        {
-          "id": "K02_A",
-          "text": "如实说明货源",
-          "effect_description": "reputation +5；老商人愿意下次有货再谈。",
-          "effects": {
-            "reputation": {
-              "operation": "add",
-              "value": 5
-            }
-          },
-          "next_node": "K03"
-        },
-        {
-          "id": "K02_B",
-          "text": "只说必要信息",
-          "effect_description": "alang.informationValue +1；完成本次交易，但没有下一次合作承诺。",
-          "effects": {
-            "alang.informationValue": {
-              "operation": "add",
-              "value": 1
-            }
-          },
-          "next_node": "K03"
-        },
-        {
-          "id": "K02_C",
-          "text": "夸大人脉",
-          "effect_description": "reputation -5；risk +10；未来预期被抬高。",
           "effects": {
             "reputation": {
               "operation": "add",

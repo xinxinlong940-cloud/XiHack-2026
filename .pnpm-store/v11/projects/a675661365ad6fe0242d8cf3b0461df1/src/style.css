@@ -243,6 +243,9 @@ button:focus-visible { outline: 2px solid #dfc697; outline-offset: 4px; }
   background: rgba(10, 9, 8, .82);
 }
 .stage-header__brand { color: #e7dece; font-family: "Songti SC", "SimSun", "Noto Serif CJK SC", serif; font-size: .97rem; letter-spacing: .12em; white-space: nowrap; }
+.stage-header:has(.back-choice) .stage-header__brand { margin-left: clamp(155px, 15vw, 210px); }
+.back-choice { position: absolute; left: clamp(22px, 3vw, 54px); padding: 7px 12px; border: 1px solid rgba(206, 176, 121, .34); border-radius: 0; background: rgba(10, 9, 8, .72); color: #d6c4a6; font-size: .75rem; letter-spacing: .08em; transition: background .18s ease, border-color .18s ease; }
+.back-choice:hover, .back-choice:focus-visible { border-color: #b69761; background: rgba(180, 151, 98, .16); }
 .stage-meta { min-width: 0; margin-left: auto; color: #aa9e8b; font-size: .76rem; letter-spacing: .12em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .status-toggle { flex: 0 0 auto; padding: 7px 13px; border: 1px solid rgba(206, 176, 121, .34); border-radius: 0; background: transparent; color: #d6c4a6; font-size: .75rem; letter-spacing: .13em; transition: background .18s ease, border-color .18s ease; }
 .status-toggle:hover { border-color: #b69761; background: rgba(180, 151, 98, .12); }
@@ -383,6 +386,8 @@ button:focus-visible { outline: 2px solid #dfc697; outline-offset: 4px; }
   .stage-screen { padding: 56px 0 0; }
   .stage-header { height: 56px; padding: 0 15px; gap: 10px; }
   .stage-header__brand { font-size: .85rem; }
+  .stage-header:has(.back-choice) .stage-header__brand { margin-left: 140px; }
+  .back-choice { left: 15px; padding: 6px 8px; font-size: .68rem; }
   .stage-meta { font-size: .68rem; }
   .status-toggle { padding: 6px 9px; }
   .cinema-stage { width: 100vw; height: calc(100svh - 56px); max-height: none; aspect-ratio: auto; box-shadow: none; }
