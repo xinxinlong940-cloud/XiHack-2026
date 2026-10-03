@@ -53,6 +53,11 @@ const stageTitles = {
   J03: '西市 · 返修',
   J04: '西市 · 接单',
 }
+const endingSummaries = {
+  END01: '你在西市站稳了脚跟。',
+  END02: '一笔交易，三种人生由此展开。',
+  END03: '你以信用换来了一次长期合作。',
+}
 const stateLabels = {
   cash: '金钱', reputation: '信誉', risk: '风险', timePressure: '时间压力',
   'kangyan.debtBalance': '债务', 'ajiu.nameValue': '名字价值',
@@ -66,7 +71,16 @@ function labelForChange({ path, before, after }) {
   const label = stateLabels[path] ?? path
   if (typeof before === 'number' && typeof after === 'number') {
     const difference = after - before
-    return `${difference > 0 ? '+' : ''}${difference} ${label}`
+    if (difference === 0) return `${label} 不变`
+    const wording = {
+      cash: ['增加', '减少'],
+      reputation: ['上升', '下降'],
+      risk: ['增加', '降低'],
+      timePressure: ['增加', '降低'],
+      'kangyan.debtBalance': ['增加', '减少'],
+      'ajiu.nameValue': ['提升', '降低'],
+    }[path] ?? ['上升', '下降']
+    return `${label}${difference > 0 ? wording[0] : wording[1]}`
   }
   return `${label} 已更新`
 }
@@ -324,6 +338,7 @@ export default function App() {
   )
   const chapter = node.character === 'shared' ? '共同篇章' : displayNames[currentCharacter] ?? displayNames[node.character]
   const stageTitle = stageTitles[node.id] ?? node.title
+  const endingSummary = node.description || endingSummaries[node.id]
   function videoEnded(event) {
     if (branchVideo) { finishBranchVideo(); return }
     if (isChoicePublicVideo) {
@@ -403,7 +418,7 @@ export default function App() {
         {isEnding && showOverlay && (
           <div className="ending-overlay">
             <span className="ending-label">END · {node.id}</span><h1>{node.title}</h1>
-            {node.description && <p>{node.description}</p>}
+            {endingSummary && <p className="ending-summary">{endingSummary}</p>}
             <div className="ending-actions">
               <button type="button" onClick={() => returnToSelection(false)}>返回人物选择</button>
               <button type="button" onClick={() => returnToSelection(true)}>重新开始</button>

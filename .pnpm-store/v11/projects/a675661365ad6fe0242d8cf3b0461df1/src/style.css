@@ -154,6 +154,7 @@ button:focus-visible { outline: 2px solid #dfc697; outline-offset: 4px; }
   .drum-foreground::after, .opening-prompt { animation: none; }
   .drum-camera { transition: none; }
   .drum-impact-1, .drum-impact-2, .drum-impact-3, .opening-camera-1, .opening-camera-2, .opening-camera-3 { animation: none; }
+  .selection-header, .route-card { animation: none; }
 }
 @keyframes drumTremorOne { 0%, 100% { transform: translate(0); } 35% { transform: translate(1px, -1px); } 70% { transform: translate(-1px, 1px); } }
 @keyframes drumTremorTwo { 0%, 100% { transform: translate(0); } 25% { transform: translate(2px, -1px); } 55% { transform: translate(-2px, 1px); } 80% { transform: translate(1px, -1px); } }
@@ -170,9 +171,11 @@ button:focus-visible { outline: 2px solid #dfc697; outline-offset: 4px; }
   animation: selectionReveal .65s ease-out both;
 }
 @keyframes selectionReveal { from { opacity: 0; } to { opacity: 1; } }
+@keyframes selectionHeaderIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes routeCardIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
 .selection-video { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(.38) sepia(.2); }
 .selection-wait { position: relative; z-index: 1; color: var(--muted); letter-spacing: .15em; }
-.selection-header { position: relative; z-index: 1; max-width: 800px; text-align: center; }
+.selection-header { position: relative; z-index: 1; max-width: 800px; text-align: center; animation: selectionHeaderIn .55s ease-out both; }
 .selection-header h1, .selection-header h2 {
   margin: .2em 0 .08em;
   font-family: "Songti SC", "SimSun", "Noto Serif CJK SC", serif;
@@ -206,8 +209,11 @@ button:focus-visible { outline: 2px solid #dfc697; outline-offset: 4px; }
   text-align: left;
   isolation: isolate;
   transition: border-color .2s ease, transform .2s ease, filter .2s ease;
+  animation: routeCardIn .62s cubic-bezier(.2, .72, .18, 1) both;
 }
+.route-card:nth-child(1) { animation-delay: .12s; }
 .route-card:nth-child(2) { background: radial-gradient(circle at 25% 20%, rgba(91, 72, 53, .26), transparent 50%), linear-gradient(160deg, #252018, #15130f 65%, #0b0a08); }
+.route-card:nth-child(2) { animation-delay: .24s; }
 .route-card::before { content: ""; position: absolute; inset: 0; z-index: -1; background-position: center 18%; background-size: cover; background-repeat: no-repeat; filter: saturate(.72) contrast(1.04) brightness(.62); transition: transform .35s ease, filter .35s ease; }
 .route-card--kangyan::before { background-image: linear-gradient(180deg, rgba(9, 8, 7, .08) 20%, rgba(8, 7, 6, .76) 86%), url('/assets/characters/kangyan-card.png'); background-position: center 24%; }
 .route-card--ajiu::before { background-image: linear-gradient(180deg, rgba(9, 8, 7, .12) 20%, rgba(8, 7, 6, .78) 86%), url('/assets/characters/ajiu-card.png'); background-position: 58% center; background-size: cover; }
@@ -415,6 +421,7 @@ button:focus-visible { outline: 2px solid #dfc697; outline-offset: 4px; }
 .ending-overlay { position: absolute; z-index: 10; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px; background: radial-gradient(ellipse at center, rgba(16, 12, 9, .88), rgba(0, 0, 0, .95)); text-align: center; animation: appear .5s ease-out both; }
 .ending-overlay h1, .ending-overlay h2 { max-width: 850px; margin: 20px 0 10px; font-family: "Songti SC", "SimSun", "Noto Serif CJK SC", serif; font-size: clamp(1.8rem, 3.5vw, 3.8rem); font-weight: 400; letter-spacing: .12em; line-height: 1.4; }
 .ending-overlay p:not(.ending-label) { max-width: 700px; color: #c9bda9; line-height: 1.8; }
+.ending-summary { margin: 0 0 20px; color: #e3d2b4 !important; font-family: "Songti SC", "SimSun", "Noto Serif CJK SC", serif; font-size: clamp(1rem, 1.5vw, 1.25rem); letter-spacing: .1em; }
 .ending-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: clamp(22px, 5vh, 45px); }
 .ending-actions button { min-width: 155px; min-height: 45px; padding: 10px 20px; border: 1px solid rgba(203, 174, 121, .67); border-radius: 0; background: rgba(47, 34, 20, .7); color: var(--paper); letter-spacing: .08em; }
 .ending-actions button:hover { background: rgba(125, 88, 43, .53); }

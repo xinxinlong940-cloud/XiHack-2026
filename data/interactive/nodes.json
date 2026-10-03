@@ -458,17 +458,82 @@
       ]
     },
     {
-      "id": "S01",
-      "character": "shared",
-      "title": "同一笔订单·阿郎入场",
-      "type": "linear",
-      "video_placeholder": "assets/video/shared/S01.mp4",
-      "choices": [],
-      "next": [
-        "S02"
-      ],
-      "synopsis": "阿郎首次出现：西市普通交易撮合者，帮助买卖双方核对行情和商谈条件，使用个人记录，没有官方裁判权。"
-    },
+    "id": "S01",
+    "character": "shared",
+    "title": "共同篇章·三人最终合议",
+    "type": "choice",
+    "video_placeholder": "assets/video/kangyan/10月4日(1)/10月4日(1).mp4",
+    "choices": [
+      {
+        "id": "S04_A",
+        "text": "马上成交",
+        "effect_description": "六件先卖；获得即时现金，但长期利益较低。",
+        "effects": {},
+        "next_node": "END01"
+      },
+      {
+        "id": "S04_B",
+        "text": "坚持原价",
+        "effect_description": "交易暂时搁置；复用 END01 的生活收束素材，不表示交易已经完成。",
+        "effects": {},
+        "next_node": "END01"
+      },
+      {
+        "id": "S04_C",
+        "text": "重新谈条件",
+        "effect_description": "六件先交、四件后补；形成长期合作机会。康延视角 reputation >= 60 或阿九视角 ajiu.nameValue >= 2 时进入 END03，否则进入 END02。",
+        "effects": {},
+        "condition": {
+          "expression": {
+            "any": [
+              {
+                "all": [
+                  {
+                    "field": "storyFlags.viewpoint",
+                    "operator": "==",
+                    "value": "kangyan"
+                  },
+                  {
+                    "field": "reputation",
+                    "operator": ">=",
+                    "value": 60
+                  }
+                ]
+              },
+              {
+                "all": [
+                  {
+                    "field": "storyFlags.viewpoint",
+                    "operator": "==",
+                    "value": "ajiu"
+                  },
+                  {
+                    "field": "ajiu.nameValue",
+                    "operator": ">=",
+                    "value": 2
+                  }
+                ]
+              }
+            ]
+          },
+          "evaluation": "after_effects",
+          "on_true": {
+            "next_node": "END03"
+          },
+          "on_false": {
+            "next_node": "END02"
+          }
+        },
+        "next_node": "END02"
+      }
+    ],
+    "next": [
+      "END01",
+      "END02",
+      "END03"
+    ],
+    "synopsis": "共同篇章完整影像；视频末帧出现三项选择。"
+  },
     {
       "id": "S02",
       "character": "shared",
