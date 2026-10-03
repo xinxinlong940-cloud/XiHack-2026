@@ -6,33 +6,60 @@ import OpeningPrelude from './OpeningPrelude.jsx'
 import VideoControls from './VideoControls.jsx'
 import { CircleGauge, Undo2 } from 'lucide-react'
 
+const AI_CREDIT = {
+  disclosure: 'AI 生成',
+  workId: 'XIHACK-2026-DTXS-001',
+  generatedAt: '2026-10-04T00:00:00+08:00',
+  generatedAtLabel: '2026 年 10 月 4 日',
+  tools: '视频生成：seedance 2.5、minmax H3；图片生成：GPT image2.5、Nano banana 2',
+}
+
+function AiDisclosure() {
+  return <div className="ai-disclosure ai-disclosure--compact" aria-label={`AI 生成，作品编号 ${AI_CREDIT.workId}`}>
+    <strong>{AI_CREDIT.disclosure}</strong>
+  </div>
+}
+
+function videoCreditProps() {
+  return {
+    'data-ai-generated': 'true',
+    'data-ai-work-id': AI_CREDIT.workId,
+    'data-ai-generated-at': AI_CREDIT.generatedAt,
+    'data-ai-tools': AI_CREDIT.tools,
+  }
+}
+
 const videoFiles = import.meta.glob('../../assets/video/**/*.{mp4,webm,ogg}', {
   eager: true, query: '?url', import: 'default',
 })
+const publicAsset = (path) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`
 
 const choiceVideos = {
-  K01_A: '/video/kangyan/K01/K01-A_v01.mp4',
-  K01_B: '/video/kangyan/K01/K01-B_v01.mp4',
-  K01_C: '/video/kangyan/K01/K01-C_v01.mp4',
-  K03_A: '/video/kangyan/K03/K03-A_v01.mp4',
-  K03_B: '/video/kangyan/K03/K03-B_v01.mp4',
-  K03_C: '/video/kangyan/K03/K03-C_v01.mp4',
-  J01_A: '/video/ajiu/J01/J01-A.mp4',
-  J01_B: '/video/ajiu/J01/J01-B.mp4',
-  J01_C: '/video/ajiu/J01/J01-C.mp4',
-  J02_A: '/video/ajiu/J02/J02-A.mp4',
-  J02_B: '/video/ajiu/J02/J02-B.mp4',
-  J02_C: '/video/ajiu/J02/J02-C.mp4',
-  J03_A: '/video/ajiu/J03/J03-A.mp4',
-  J03_B: '/video/ajiu/J03/J03-B.mp4',
-  J03_C: '/video/ajiu/J03/J03-C.mp4',
-  J04_A: '/video/ajiu/J04/J04-A.mp4',
-  J04_B: '/video/ajiu/J04/J04-B.mp4',
-  J04_C: '/video/ajiu/J04/J04-C.mp4',
-  K04_A: '/video/kangyan/K04/K04-A.mp4',
-  K04_B: '/video/kangyan/K04/K04-B.mp4',
-  K04_C_success: '/video/kangyan/K04/K04-C-success.mp4',
-  K04_C_failure: '/video/kangyan/K04/K04-C-failure.mp4',
+  K01_A: publicAsset('video/kangyan/K01/K01-A_v01.mp4'),
+  K01_B: publicAsset('video/kangyan/K01/K01-B_v01.mp4'),
+  K01_C: publicAsset('video/kangyan/K01/K01-C_v01.mp4'),
+  K03_A: publicAsset('video/kangyan/K03/K03-A_v01.mp4'),
+  K03_B: publicAsset('video/kangyan/K03/K03-B_v01.mp4'),
+  K03_C: publicAsset('video/kangyan/K03/K03-C_v01.mp4'),
+  J01_A: publicAsset('video/ajiu/J01/J01-A.mp4'),
+  J01_B: publicAsset('video/ajiu/J01/J01-B.mp4'),
+  J01_C: publicAsset('video/ajiu/J01/J01-C.mp4'),
+  J02_A: publicAsset('video/ajiu/J02/J02-A.mp4'),
+  J02_B: publicAsset('video/ajiu/J02/J02-B.mp4'),
+  J02_C: publicAsset('video/ajiu/J02/J02-C.mp4'),
+  J03_A: publicAsset('video/ajiu/J03/J03-A.mp4'),
+  J03_B: publicAsset('video/ajiu/J03/J03-B.mp4'),
+  J03_C: publicAsset('video/ajiu/J03/J03-C.mp4'),
+  J04_A: publicAsset('video/ajiu/J04/J04-A.mp4'),
+  J04_B: publicAsset('video/ajiu/J04/J04-B.mp4'),
+  J04_C: publicAsset('video/ajiu/J04/J04-C.mp4'),
+  K04_A: publicAsset('video/kangyan/K04/K04-A.mp4'),
+  K04_B: publicAsset('video/kangyan/K04/K04-B.mp4'),
+  K04_C_success: publicAsset('video/kangyan/K04/K04-C-success.mp4'),
+  K04_C_failure: publicAsset('video/kangyan/K04/K04-C-failure.mp4'),
+  S04_A: publicAsset('video/shared/S04-A.mp4'),
+  S04_B: publicAsset('video/shared/S04-B.mp4'),
+  S04_C: publicAsset('video/shared/S04-C.mp4'),
 }
 
 function readJson(text, label) {
@@ -54,9 +81,14 @@ const stageTitles = {
   J04: '西市 · 接单',
 }
 const endingSummaries = {
-  END01: '你在西市站稳了脚跟。',
-  END02: '一笔交易，三种人生由此展开。',
-  END03: '你以信用换来了一次长期合作。',
+  END01: '西市的喧声重新漫过街口。康延守住自己的生计，阿九继续守着手艺，阿郎把今日的价钱记进纸上。没有谁替谁许诺，三个人各自带着这一天的选择，继续在长安立足。',
+  END02: '一笔买卖没有替三个人抹平分歧。六件货、未完的约定和各自的生计，沿着西市的街巷散开。长安仍在运转，下一笔交易也许会让他们再次相逢。',
+  END03: '六件先交，四件后补。写下的约定让陌生人有了再见的理由。康延缓过债务的急迫，阿九守住自己的名字，阿郎留下这场交易的凭据。西市灯火未歇，一段合作从今日开始。',
+}
+
+function endingSummaryFor(node) {
+  const description = typeof node.description === 'string' ? node.description.trim() : ''
+  return description || endingSummaries[node.id] || `${node.title}。`
 }
 const stateLabels = {
   cash: '金钱', reputation: '信誉', risk: '风险', timePressure: '时间压力',
@@ -64,7 +96,7 @@ const stateLabels = {
 }
 
 function mediaFor(node) {
-  if (node.video_placeholder?.startsWith('video/')) return `/${node.video_placeholder}`
+  if (node.video_placeholder?.startsWith('video/')) return publicAsset(node.video_placeholder)
   return videoFiles[`../../${node.video_placeholder}`] ?? null
 }
 function labelForChange({ path, before, after }) {
@@ -227,7 +259,7 @@ export default function App() {
     const choiceVideo = nodeId === 'K04' && choice.id === 'K04_C'
       ? choiceVideos[result.conditionMatched ? 'K04_C_success' : 'K04_C_failure']
       : choiceVideos[choice.id]
-    if ((nodeId === 'K01' || nodeId === 'K03' || nodeId === 'J01' || nodeId === 'J02' || nodeId === 'J03' || nodeId === 'J04' || nodeId === 'K04') && choiceVideo) {
+    if ((nodeId === 'K01' || nodeId === 'K03' || nodeId === 'J01' || nodeId === 'J02' || nodeId === 'J03' || nodeId === 'J04' || nodeId === 'K04' || nodeId === 'S04') && choiceVideo) {
       branchPlaying.current = true
       branchFinishHandled.current = false
       setHoldPublicVideo(false)
@@ -293,7 +325,8 @@ export default function App() {
     const hasStartVideo = Boolean(startVideo && !mediaFailed)
     return (
       <main className="app selection-screen">
-        {hasStartVideo && <video ref={activeVideo} className="selection-video" src={startVideo} autoPlay playsInline controls
+        <AiDisclosure />
+        {hasStartVideo && <video ref={activeVideo} className="selection-video" src={startVideo} autoPlay playsInline controls {...videoCreditProps()}
           onEnded={() => setReady(true)} onError={() => setMediaFailed(true)} aria-label={start.title} />}
         <header className="selection-header"><p>《大唐西市》 · {start.title}</p><h1>选择你要经历的人生</h1></header>
         {hasStartVideo && soundBlocked && <button className="playback-continue" type="button" onClick={playWithSound}>开启声音并播放</button>}
@@ -338,7 +371,7 @@ export default function App() {
   )
   const chapter = node.character === 'shared' ? '共同篇章' : displayNames[currentCharacter] ?? displayNames[node.character]
   const stageTitle = stageTitles[node.id] ?? node.title
-  const endingSummary = node.description || endingSummaries[node.id]
+  const endingSummary = endingSummaryFor(node)
   function videoEnded(event) {
     if (branchVideo) { finishBranchVideo(); return }
     if (isChoicePublicVideo) {
@@ -381,8 +414,10 @@ export default function App() {
         {!isK01PublicVideo && <button className="status-toggle" type="button" aria-expanded={statusOpen} onClick={() => setStatusOpen(!statusOpen)}><CircleGauge aria-hidden="true" size={15} strokeWidth={1.6} /><span>状态</span></button>}
       </header>
       <section className="cinema-stage" aria-label={node.title}>
+        <AiDisclosure />
         {hasVideo ? (
           <video ref={activeVideo} key={`${nodeId}:${branchVideo?.url ?? videoUrl}`} className="cinema-video" src={videoUrl} autoPlay={!holdPublicVideo} playsInline
+            {...videoCreditProps()}
             onLoadedMetadata={isChoicePublicVideo && !branchVideo ? publicVideoLoaded : undefined}
             onPlay={isK03PublicVideo ? () => setCompletedVideo(null) : undefined}
             onSeeking={isK03PublicVideo ? () => setCompletedVideo(null) : undefined}
@@ -397,6 +432,7 @@ export default function App() {
         {hasVideo && !showOverlay && <VideoControls key={videoUrl} videoRef={activeVideo} onPlayRequest={playWithSound} />}
         <div key={`${node.id}:${branchVideo ? 'branch' : 'public'}`} className={`stage-caption${branchVideo ? ' stage-caption--branch' : ''}`}>
           <span>{stageTitle}</span>{(node.description || node.synopsis) && <p>{node.description || node.synopsis}</p>}
+          <small>AI 生成 · 作品编号 {AI_CREDIT.workId} · 生成于 {AI_CREDIT.generatedAtLabel}</small>
         </div>
         {hasVideo && soundBlocked && <button className="playback-continue" type="button" onClick={playWithSound}>开启声音并播放</button>}
         {!hasVideo && !isEnding && !ready && (
@@ -417,11 +453,17 @@ export default function App() {
         )}
         {isEnding && showOverlay && (
           <div className="ending-overlay">
-            <span className="ending-label">END · {node.id}</span><h1>{node.title}</h1>
-            {endingSummary && <p className="ending-summary">{endingSummary}</p>}
-            <div className="ending-actions">
-              <button type="button" onClick={() => returnToSelection(false)}>返回人物选择</button>
-              <button type="button" onClick={() => returnToSelection(true)}>重新开始</button>
+            <div className="ending-content">
+              <span className="ending-label">END · {node.id}</span><h1>{node.title}</h1>
+              <span className="ending-rule" aria-hidden="true" />
+              <div className="ending-route-summary">
+                <span>路线总结</span>
+                <p className="ending-summary">{endingSummary}</p>
+              </div>
+              <div className="ending-actions">
+                <button type="button" onClick={() => returnToSelection(false)}>返回人物选择</button>
+                <button type="button" onClick={() => returnToSelection(true)}>重新开始</button>
+              </div>
             </div>
           </div>
         )}

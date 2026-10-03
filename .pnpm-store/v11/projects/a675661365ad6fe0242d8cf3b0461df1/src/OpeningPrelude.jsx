@@ -1,9 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 
-const DRUM_IMAGE = '/assets/opening/market-drum.png'
-const DRUM_AUDIO = '/audio/drum-hit.mp3'
-const AMBIENCE_AUDIO = '/audio/market-ambience.mp3'
-const GATE_VIDEO = '/assets/opening/gate-opening.mp4'
+const publicAsset = (path) => `${import.meta.env.BASE_URL}${path}`
+const DRUM_IMAGE = publicAsset('assets/opening/market-drum.png')
+const DRUM_AUDIO = publicAsset('audio/drum-hit.mp3')
+const AMBIENCE_AUDIO = publicAsset('audio/market-ambience.mp3')
+const GATE_VIDEO = publicAsset('assets/opening/gate-opening.mp4')
+const AI_CREDIT = {
+  workId: 'XIHACK-2026-DTXS-001',
+  tools: '视频生成：seedance 2.5、minmax H3；图片生成：GPT image2.5、Nano banana 2',
+}
 
 // A restrained pullback across three strikes keeps the drum in focus.
 const STAGES = [
@@ -258,6 +263,9 @@ export default function OpeningPrelude({ onFinish }) {
         '--scene-exposure': stage.exposure,
         '--stage-duration': `${stage.duration}ms`,
       }}>
+      <div className="ai-disclosure ai-disclosure--compact opening-ai-disclosure" aria-label={`AI 生成，作品编号 ${AI_CREDIT.workId}`}>
+        <strong>AI 生成</strong>
+      </div>
       <div className={`opening-artwork ${impact ? `opening-camera-${impact}` : ''}`}>
         <div className={`drum-shake ${impact ? `drum-impact-${impact}` : ''}`}>
           <div className="drum-camera">
@@ -277,6 +285,7 @@ export default function OpeningPrelude({ onFinish }) {
       {!doorFinished && <section className={`gate-screen gate-overlay ${gateStarted ? 'gate-started' : ''} ${gateFading ? 'gate-fading' : ''}`} aria-label="西市一日，开门入市">
         <div className="gate-film-frame">
         <video ref={gateVideo} className="gate-video" src={GATE_VIDEO} playsInline preload="auto"
+          data-ai-generated="true" data-ai-work-id={AI_CREDIT.workId} data-ai-tools={AI_CREDIT.tools}
           onTimeUpdate={(event) => setGateTitleOpacity(Math.max(0, 1 - (event.currentTarget.currentTime - 0.6) / 2))}
           onEnded={finishGate} onError={() => { gateFailed.current = true; if (gateStarted) finishGate() }}
           aria-label="开门入市" />
@@ -284,6 +293,7 @@ export default function OpeningPrelude({ onFinish }) {
         <div className="gate-film-heading" style={{ opacity: Math.min(1, gateTitleOpacity) }}>
           <h1 className="gate-film-title">西市一日</h1>
           <p className="gate-film-brand">《大唐西市》</p>
+          <p className="gate-ai-credit">AI 生成 · 工具：{AI_CREDIT.tools}</p>
         </div>
         <button className="gate-enter" type="button" disabled={gateStarted} onClick={enterMarket}>进入西市</button>
         </div>
