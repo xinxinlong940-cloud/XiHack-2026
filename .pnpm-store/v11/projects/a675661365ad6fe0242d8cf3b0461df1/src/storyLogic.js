@@ -42,7 +42,9 @@ function applyEffects(state, effects = {}, schema) {
 
 function matchesCondition(expression, state) {
   if (expression.all) return expression.all.every((part) => matchesCondition(part, state))
+  if (expression.any) return expression.any.some((part) => matchesCondition(part, state))
   const actual = readPath(state, expression.field)
+  if (expression.operator === '==') return actual === expression.value
   if (expression.operator === '>=') return actual >= expression.value
   return false
 }
@@ -50,13 +52,15 @@ function matchesCondition(expression, state) {
 export function resolveChoice(playerState, choice, schema) {
   let updated = applyEffects(playerState, choice.effects, schema)
   let nextNode = choice.next_node
+  let conditionMatched = null
   const changedPaths = new Set(Object.keys(choice.effects ?? {}))
 
   if (choice.condition) {
     const observed = choice.condition.evaluation === 'before_effects'
       ? playerState
       : updated
-    const branch = matchesCondition(choice.condition.expression, observed)
+    conditionMatched = matchesCondition(choice.condition.expression, observed)
+    const branch = conditionMatched
       ? choice.condition.on_true
       : choice.condition.on_false
     updated = applyEffects(updated, branch.effects, schema)
@@ -68,7 +72,7 @@ export function resolveChoice(playerState, choice, schema) {
     .map((path) => ({ path, before: readPath(playerState, path), after: readPath(updated, path) }))
     .filter(({ before, after }) => before !== after)
 
-  return { playerState: updated, nextNode, changes }
+  return { playerState: updated, nextNode, changes, conditionMatched }
 }
 
 export function recordCompletedRoute(playerState, characterId) {

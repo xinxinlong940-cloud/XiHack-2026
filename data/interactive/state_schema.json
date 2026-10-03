@@ -65,24 +65,14 @@
         "nameValue": 0
       }
     },
-    "alang": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "informationValue": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 3,
-          "default": 0
-        }
-      },
-      "required": ["informationValue"],
-      "default": {
-        "informationValue": 0
-      }
-    },
     "storyFlags": {
       "type": "object",
+      "properties": {
+        "viewpoint": {
+          "type": "string",
+          "enum": ["kangyan", "ajiu"]
+        }
+      },
       "default": {}
     }
   },
@@ -94,7 +84,6 @@
     "relationships",
     "kangyan",
     "ajiu",
-    "alang",
     "storyFlags"
   ]
 }

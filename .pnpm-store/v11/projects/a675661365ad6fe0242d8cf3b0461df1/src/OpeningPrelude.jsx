@@ -276,7 +276,7 @@ export default function OpeningPrelude({ onFinish }) {
       </p>
       {!doorFinished && <section className={`gate-screen gate-overlay ${gateStarted ? 'gate-started' : ''} ${gateFading ? 'gate-fading' : ''}`} aria-label="西市一日，开门入市">
         <div className="gate-film-frame">
-        <video ref={gateVideo} className="gate-video" src={GATE_VIDEO} muted playsInline preload="auto"
+        <video ref={gateVideo} className="gate-video" src={GATE_VIDEO} playsInline preload="auto"
           onTimeUpdate={(event) => setGateTitleOpacity(Math.max(0, 1 - (event.currentTarget.currentTime - 0.6) / 2))}
           onEnded={finishGate} onError={() => { gateFailed.current = true; if (gateStarted) finishGate() }}
           aria-label="开门入市" />
