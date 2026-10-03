@@ -20,6 +20,34 @@ button:focus-visible { outline: 2px solid #dfc697; outline-offset: 4px; }
 #root, .app { min-height: 100svh; }
 .app { background: var(--ink); overflow: hidden; }
 
+/* Compliance disclosure remains visible while a work is being viewed. */
+.ai-disclosure {
+  position: absolute;
+  z-index: 12;
+  top: 18px;
+  right: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  max-width: min(74vw, 520px);
+  padding: 7px 10px;
+  border: 1px solid rgba(238, 216, 171, .44);
+  background: rgba(9, 8, 7, .78);
+  color: #eadfc9;
+  font-size: .68rem;
+  line-height: 1.35;
+  letter-spacing: .04em;
+  text-align: right;
+  text-shadow: 0 1px 3px #000;
+  pointer-events: none;
+}
+.ai-disclosure strong { color: #f4d79b; font-size: .76rem; font-weight: 600; letter-spacing: .12em; }
+.ai-disclosure span { color: #cbbda7; overflow-wrap: anywhere; }
+.ai-disclosure--compact { padding: 5px 8px; }
+.ai-disclosure--compact span { display: none; }
+.opening-ai-disclosure { top: 18px; right: 22px; }
+
 /* Opening poster and route gallery */
 .poster-home, .selection-screen {
   position: relative;
@@ -108,6 +136,7 @@ button:focus-visible { outline: 2px solid #dfc697; outline-offset: 4px; }
 .gate-film-heading { position: absolute; top: 12%; left: 50%; width: min(88%, 460px); transform: translateX(-50%); text-align: center; pointer-events: none; transition: opacity .2s linear; }
 .gate-film-title { margin: 0; color: #eeeadd; font-family: 'Xishi Calligraphy', 'STXingkai', 'KaiTi', serif; font-size: 112px; font-weight: 400; line-height: 1.2; letter-spacing: 0; white-space: nowrap; text-shadow: 0 2px 5px rgba(0, 0, 0, .24); }
 .gate-film-brand { margin: 22px 0 0; color: var(--paper); font-family: 'Songti SC', 'SimSun', serif; font-size: 16px; letter-spacing: 0; opacity: .75; transition: opacity .3s ease; }
+.gate-ai-credit { margin: 12px 0 0; color: #eadfc9; font-family: "Microsoft YaHei", sans-serif; font-size: 11px; letter-spacing: .03em; opacity: .9; text-shadow: 0 1px 4px #000; }
 .gate-started .gate-film-brand { opacity: 0; }
 .gate-enter { position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%); min-height: 48px; padding: 12px 24px; border: 0; border-radius: 0; color: #ded9cc; background: transparent; font-family: 'Songti SC', 'SimSun', serif; font-size: 18px; text-shadow: 0 2px 5px #000; transition: opacity .3s ease, color .2s ease; }
 .gate-enter::after { content: ''; position: absolute; width: 48px; height: 1px; left: 50%; bottom: 3px; transform: translateX(-50%); background: currentColor; opacity: .5; }
@@ -351,6 +380,7 @@ button:focus-visible { outline: 2px solid #dfc697; outline-offset: 4px; }
   font-size: 16px;
   line-height: 1.7;
 }
+.stage-caption small { display: block; margin-top: 10px; color: rgba(239, 231, 216, .72); font-family: "Microsoft YaHei", sans-serif; font-size: .66rem; letter-spacing: .04em; line-height: 1.5; }
 .choice-overlay {
   position: absolute;
   z-index: 5;
@@ -418,11 +448,16 @@ button:focus-visible { outline: 2px solid #dfc697; outline-offset: 4px; }
 .effect-toast span { display: block; }
 
 /* Ending and transition */
-.ending-overlay { position: absolute; z-index: 10; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px; background: radial-gradient(ellipse at center, rgba(16, 12, 9, .88), rgba(0, 0, 0, .95)); text-align: center; animation: appear .5s ease-out both; }
-.ending-overlay h1, .ending-overlay h2 { max-width: 850px; margin: 20px 0 10px; font-family: "Songti SC", "SimSun", "Noto Serif CJK SC", serif; font-size: clamp(1.8rem, 3.5vw, 3.8rem); font-weight: 400; letter-spacing: .12em; line-height: 1.4; }
+.ending-overlay { position: absolute; z-index: 10; inset: 0; display: grid; place-items: center; padding: clamp(24px, 6vw, 72px); background: rgba(7, 7, 6, .96); text-align: center; animation: appear .5s ease-out both; }
+.ending-content { width: min(100%, 680px); padding: clamp(28px, 6vw, 64px) clamp(22px, 6vw, 70px); border-top: 1px solid rgba(203, 174, 121, .45); border-bottom: 1px solid rgba(203, 174, 121, .2); }
+.ending-overlay h1, .ending-overlay h2 { max-width: 850px; margin: 18px 0 12px; font-family: "Songti SC", "SimSun", "Noto Serif CJK SC", serif; font-size: clamp(1.8rem, 3.5vw, 3.8rem); font-weight: 400; letter-spacing: .12em; line-height: 1.4; }
 .ending-overlay p:not(.ending-label) { max-width: 700px; color: #c9bda9; line-height: 1.8; }
+.ending-rule { display: block; width: 42px; height: 1px; margin: 0 auto 25px; background: var(--gold); opacity: .8; }
 .ending-summary { margin: 0 0 20px; color: #e3d2b4 !important; font-family: "Songti SC", "SimSun", "Noto Serif CJK SC", serif; font-size: clamp(1rem, 1.5vw, 1.25rem); letter-spacing: .1em; }
-.ending-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: clamp(22px, 5vh, 45px); }
+.ending-route-summary { display: grid; gap: 5px; justify-items: center; margin-top: 4px; }
+.ending-route-summary > span { color: var(--gold); font-size: .68rem; letter-spacing: .18em; }
+.ending-route-summary p { margin-bottom: 0; }
+.ending-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: clamp(28px, 5vh, 45px); }
 .ending-actions button { min-width: 155px; min-height: 45px; padding: 10px 20px; border: 1px solid rgba(203, 174, 121, .67); border-radius: 0; background: rgba(47, 34, 20, .7); color: var(--paper); letter-spacing: .08em; }
 .ending-actions button:hover { background: rgba(125, 88, 43, .53); }
 .ending-actions button + button { background: transparent; border-color: rgba(203, 174, 121, .32); }
@@ -440,6 +475,9 @@ button:focus-visible { outline: 2px solid #dfc697; outline-offset: 4px; }
 @keyframes curtainOut { from { opacity: 1; } to { opacity: 0; } }
 
 @media (max-width: 760px) {
+  .ai-disclosure { top: 12px; right: 14px; max-width: 82vw; font-size: .6rem; }
+  .ai-disclosure strong { font-size: .68rem; }
+  .gate-ai-credit { max-width: 90%; margin-inline: auto; font-size: 9px; line-height: 1.45; }
   .poster-home::before, .selection-screen::before { inset: 14px; }
   .poster-content { width: min(100% - 32px, 560px); }
   .poster-title { letter-spacing: .07em; }
@@ -457,6 +495,7 @@ button:focus-visible { outline: 2px solid #dfc697; outline-offset: 4px; }
   .cinema-stage { width: 100vw; height: calc(100svh - 56px); max-height: none; aspect-ratio: auto; box-shadow: none; }
   .video-controls { min-height: 58px; padding: 10px 12px; }
   .stage-caption { top: 13%; font-size: clamp(1rem, 4vw, 1.4rem); }
+  .stage-caption small { margin-top: 7px; font-size: .58rem; }
   .choice-overlay { max-height: 47%; padding: 40px 16px 24px; }
   .choice-option { min-height: 48px; padding: 10px 12px; font-size: .85rem; }
   .cinema-placeholder::before { inset: 14px; }

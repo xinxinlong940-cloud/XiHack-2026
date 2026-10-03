@@ -637,7 +637,7 @@
       "character": "shared",
       "title": "各自站稳",
       "type": "ending",
-      "video_placeholder": "assets/video/endings/END01.mp4",
+      "video_placeholder": null,
       "choices": [],
       "next": []
     },
@@ -646,7 +646,7 @@
       "character": "shared",
       "title": "一笔交易，三种人生",
       "type": "ending",
-      "video_placeholder": "assets/video/endings/END02.mp4",
+      "video_placeholder": null,
       "choices": [],
       "next": []
     },
@@ -655,7 +655,7 @@
       "character": "shared",
       "title": "真结局",
       "type": "ending",
-      "video_placeholder": "assets/video/endings/END03.mp4",
+      "video_placeholder": null,
       "choices": [],
       "next": []
     }

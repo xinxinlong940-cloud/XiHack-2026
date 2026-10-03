@@ -1,0 +1,12 @@
+{
+  "workId": "XIHACK-2026-DTXS-001",
+  "title": "《大唐西市》",
+  "generatedAt": "2026-10-04T00:00:00+08:00",
+  "tools": [
+    "视频生成：seedance 2.5",
+    "视频生成：minmax H3",
+    "图片生成：GPT image2.5",
+    "图片生成：Nano banana 2"
+  ],
+  "disclosure": "AI 生成"
+}
