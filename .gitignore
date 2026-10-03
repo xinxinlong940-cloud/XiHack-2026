@@ -7,8 +7,11 @@ build/
 
 # Environment files
 .env
+.env.local
+outputs/
 .env.*
 !.env.example
+!.env.local.example
 
 # Caches
 .cache/

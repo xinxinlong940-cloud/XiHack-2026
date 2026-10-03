@@ -11,6 +11,12 @@ const videoFiles = import.meta.glob('../../assets/video/**/*.{mp4,webm,ogg}', {
   eager: true, query: '?url', import: 'default',
 })
 
+const choiceVideos = {
+  K01_A: '/video/kangyan/K01/K01-A_v01.mp4',
+  K01_B: '/video/kangyan/K01/K01-B_v01.mp4',
+  K01_C: '/video/kangyan/K01/K01-C_v01.mp4',
+}
+
 function readJson(text, label) {
   try { return { value: JSON.parse(text), error: null } }
   catch { return { value: null, error: `${label} 读取失败，请检查 JSON 格式。` } }
@@ -31,6 +37,7 @@ function identityFor(character) {
   return identitySources[character]?.match(/- 身份：(.+)/)?.[1]?.trim() ?? '身份资料待补充'
 }
 function mediaFor(node) {
+  if (node.video_placeholder?.startsWith('video/')) return `/${node.video_placeholder}`
   return videoFiles[`../../${node.video_placeholder}`] ?? null
 }
 function labelForChange({ path, before, after }) {
@@ -66,6 +73,8 @@ export default function App() {
   const [playerState, setPlayerState] = useState(() => state.value ? createInitialState(state.value) : null)
   const [ready, setReady] = useState(false)
   const [mediaFailed, setMediaFailed] = useState(false)
+  const [branchVideo, setBranchVideo] = useState(null)
+  const branchPlaying = useRef(false)
   const [statusOpen, setStatusOpen] = useState(false)
   const [toast, setToast] = useState([])
   const [transitionTitle, setTransitionTitle] = useState('')
@@ -76,7 +85,10 @@ export default function App() {
   useEffect(() => () => {
     timers.current.forEach(clearTimeout)
   }, [])
-  useEffect(() => { setReady(false); setMediaFailed(false); setStatusOpen(false) }, [nodeId])
+  useEffect(() => {
+    setReady(false); setMediaFailed(false); setStatusOpen(false)
+    setBranchVideo(null); branchPlaying.current = false
+  }, [nodeId])
   function schedule(callback, delay) { timers.current.push(setTimeout(callback, delay)) }
 
 
@@ -98,9 +110,16 @@ export default function App() {
     schedule(() => { setTransitionTitle(''); transitioning.current = false }, 900)
   }
   function choose(choice) {
-    if (transitioning.current) return
+    if (transitioning.current || branchPlaying.current) return
     const result = resolveChoice(playerState, choice, state.value)
     setPlayerState(result.playerState)
+    if (nodeId === 'K01' && choiceVideos[choice.id]) {
+      branchPlaying.current = true
+      setReady(false)
+      setMediaFailed(false)
+      setBranchVideo({ url: choiceVideos[choice.id], nextNode: result.nextNode })
+      return
+    }
     const character = nodeId === 'P01' ? nodesById[result.nextNode]?.character : currentCharacter
     goTo(result.nextNode, character)
     if (result.changes.length) {
@@ -112,6 +131,8 @@ export default function App() {
     timers.current.forEach(clearTimeout)
     timers.current = []
     transitioning.current = false
+    branchPlaying.current = false
+    setBranchVideo(null)
     if (reset) setPlayerState(createInitialState(state.value))
     setNodeId('P01')
     setCurrentCharacter(null)
@@ -124,16 +145,7 @@ export default function App() {
 
   const error = story.error || state.error || (!nodesById.P01 && '缺少起始节点 P01。')
   if (error) return <main className="error-screen"><h1>《大唐西市》</h1><p>{error}</p></main>
-  if (screen === 'home') return (
-    <main className="app poster-home"><div className="poster-content">
-      <p className="poster-kicker">AIGC · 互动历史叙事</p>
-      <h1 className="poster-title">《大唐西市》</h1>
-      <p className="poster-subtitle">在西市，走进三位人物的故事。</p>
-      <button className="primary-action" type="button" onClick={() => setScreen('opening')}>开始体验</button>
-    </div></main>
-  )
-
-  if (screen === 'opening') return <OpeningPrelude onFinish={() => setScreen('selection')} />
+  if (screen === 'home' || screen === 'opening') return <OpeningPrelude onFinish={() => setScreen('selection')} />
 
   if (screen === 'selection') {
     const start = nodesById.P01
@@ -165,13 +177,21 @@ export default function App() {
     </main>
   )
 
-  const videoUrl = node.video_placeholder ? mediaFor(node) : null
+  const videoUrl = branchVideo?.url ?? (node.video_placeholder ? mediaFor(node) : null)
   const hasVideo = Boolean(videoUrl && !mediaFailed)
   const isChoice = node.type === 'choice'
   const isEnding = node.type === 'ending'
-  const showOverlay = ready || (!hasVideo && isEnding)
+  const isK01PublicVideo = node.id === 'K01'
+  const showOverlay = !branchVideo && (ready || (!hasVideo && isEnding))
   const chapter = node.character === 'shared' ? '共同篇章' : displayNames[currentCharacter] ?? displayNames[node.character]
-  function videoEnded() {
+  function videoEnded(event) {
+    if (branchVideo) { goTo(branchVideo.nextNode); return }
+    if (isK01PublicVideo) {
+      // Keep M01 mounted at its final frame behind the interactive choices.
+      event.currentTarget.pause()
+      setReady(true)
+      return
+    }
     if (node.type === 'linear' && node.next?.[0]) goTo(node.next[0])
     else setReady(true)
   }
@@ -180,20 +200,21 @@ export default function App() {
       <header className="stage-header">
         <span className="stage-header__brand">《大唐西市》</span>
         <span className="stage-meta">{chapter} · {node.id}</span>
-        <button className="status-toggle" type="button" aria-expanded={statusOpen} onClick={() => setStatusOpen(!statusOpen)}>状态</button>
+        {!isK01PublicVideo && <button className="status-toggle" type="button" aria-expanded={statusOpen} onClick={() => setStatusOpen(!statusOpen)}>状态</button>}
       </header>
       <section className="cinema-stage" aria-label={node.title}>
         {hasVideo ? (
-          <video key={node.id} className="cinema-video" src={videoUrl} autoPlay muted playsInline controls
+          <video key={branchVideo?.url ?? node.id} className="cinema-video" src={videoUrl} autoPlay muted playsInline controls
             onEnded={videoEnded} onError={() => setMediaFailed(true)} aria-label={node.title} />
         ) : (
           <div className="cinema-placeholder">
-            <span>影像待接入</span><strong>{node.title}</strong><small>{node.id} · DATANG XISHI</small>
+            <span>{branchVideo ? '分支视频加载失败，请继续故事' : '影像待接入'}</span><strong>{node.title}</strong><small>{node.id} · DATANG XISHI</small>
           </div>
         )}
         <div className="stage-caption"><span>{node.title}</span>{node.description && <p>{node.description}</p>}</div>
         {!hasVideo && !isEnding && !ready && (
           <button className="playback-continue" type="button" onClick={() => {
+            if (branchVideo) { goTo(branchVideo.nextNode); return }
             if (node.type === 'linear' && node.next?.[0]) goTo(node.next[0])
             else setReady(true)
           }}>继续故事</button>
@@ -219,7 +240,7 @@ export default function App() {
         )}
         {toast.length > 0 && <div className="effect-toast" role="status">{toast.map((line) => <span key={line}>{line}</span>)}</div>}
       </section>
-      {statusOpen && <StatusPanel playerState={playerState} character={currentCharacter} />}
+      {statusOpen && !isK01PublicVideo && <StatusPanel playerState={playerState} character={currentCharacter} />}
       {transitionTitle && <div className="transition-curtain" role="status">{transitionTitle}</div>}
     </main>
   )

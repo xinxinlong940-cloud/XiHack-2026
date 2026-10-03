@@ -41,7 +41,7 @@
       "character": "kangyan",
       "title": "开远门·第一次进入长安",
       "type": "choice",
-      "video_placeholder": "assets/video/kangyan/K01.mp4",
+      "video_placeholder": "video/kangyan/K01/K01-M01.mp4",
       "choices": [
         {
           "id": "K01_A",

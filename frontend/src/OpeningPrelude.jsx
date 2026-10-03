@@ -4,20 +4,23 @@ const DRUM_IMAGE = '/assets/opening/drum-cutout.png'
 const MARKET_IMAGE = '/assets/opening/market-plate.png'
 const DRUM_AUDIO = '/audio/drum-hit.mp3'
 const AMBIENCE_AUDIO = '/audio/market-ambience.mp3'
+const GATE_VIDEO = '/assets/opening/gate-opening.mp4'
 
 // Keep the market still while the isolated drum recedes a small distance.
 const STAGES = [
-  { scale: 1.34, opacity: 0.46, exposure: 0.76, duration: 0 },
-  { scale: 1.24, opacity: 0.57, exposure: 0.84, duration: 640 },
-  { scale: 1.12, opacity: 0.68, exposure: 0.92, duration: 690 },
-  { scale: 1, opacity: 0.78, exposure: 1, duration: 760 },
+  { scale: 1.34, opacity: 0.68, exposure: 0.96, duration: 0 },
+  { scale: 1.24, opacity: 0.72, exposure: 0.98, duration: 640 },
+  { scale: 1.12, opacity: 0.76, exposure: 1, duration: 690 },
+  { scale: 1, opacity: 0.8, exposure: 1.02, duration: 760 },
 ]
 const HIT_VOLUMES = [0.34, 0.43, 0.52]
 const RIPPLE_STRENGTHS = [0.8, 1.05, 1.3]
 
 export default function OpeningPrelude({ onFinish }) {
-  const [doorOpen, setDoorOpen] = useState(false)
+  const [gateStarted, setGateStarted] = useState(false)
+  const [gateFading, setGateFading] = useState(false)
   const [doorFinished, setDoorFinished] = useState(false)
+  const [gateTitleOpacity, setGateTitleOpacity] = useState(1)
   const [hits, setHits] = useState(0)
   const [impact, setImpact] = useState(0)
   const [leaving, setLeaving] = useState(false)
@@ -30,13 +33,26 @@ export default function OpeningPrelude({ onFinish }) {
   const wave = useRef(null)
   const frame = useRef(0)
   const timers = useRef([])
+  const gateVideo = useRef(null)
+  const gateTransition = useRef(false)
+  const gateFailed = useRef(false)
+  const drumButton = useRef(null)
   const stage = STAGES[hits]
 
-  useEffect(() => {
-    const openTimer = setTimeout(() => setDoorOpen(true), 750)
-    const finishTimer = setTimeout(() => setDoorFinished(true), 2700)
-    return () => { clearTimeout(openTimer); clearTimeout(finishTimer) }
-  }, [])
+  function finishGate() {
+    if (gateTransition.current) return
+    gateTransition.current = true
+    gateVideo.current?.pause()
+    setGateFading(true)
+    schedule(() => { setDoorFinished(true); schedule(() => drumButton.current?.focus({ preventScroll: true }), 0) }, 600)
+  }
+
+  function enterMarket() {
+    if (gateStarted) return
+    setGateStarted(true)
+    if (gateFailed.current) { finishGate(); return }
+    gateVideo.current?.play().catch(finishGate)
+  }
 
   useEffect(() => {
     const request = new AbortController()
@@ -152,7 +168,7 @@ export default function OpeningPrelude({ onFinish }) {
   }
 
   function strike(event) {
-    if (locked.current || count.current >= 3) return
+    if (!doorFinished || locked.current || count.current >= 3) return
     locked.current = true
     const next = ++count.current
     const foreground = event.currentTarget.parentElement.getBoundingClientRect()
@@ -201,19 +217,6 @@ export default function OpeningPrelude({ onFinish }) {
     }
   }
 
-  if (!doorFinished) return (
-    <main className={'app gate-screen ' + (doorOpen ? 'gate-opening' : '')} aria-label="西市一日，开门入市">
-      <div className="gate-market" style={{ backgroundImage: 'url(' + MARKET_IMAGE + ')' }} aria-hidden="true" />
-      <div className="gate-light" aria-hidden="true" />
-      <div className="gate-floor-light" aria-hidden="true" />
-      <div className="gate-leaf gate-leaf-left" aria-hidden="true"><span className="gate-ring" /></div>
-      <div className="gate-leaf gate-leaf-right" aria-hidden="true"><span className="gate-ring" /></div>
-      <div className="gate-frame" aria-hidden="true" />
-      <h1 className="gate-title">西市一日</h1>
-      <p className="gate-caption">日中 · 鼓声将起</p>
-    </main>
-  )
-
   return (
     <main className={`app opening-screen ${leaving ? 'opening-leaving' : ''}`}
       style={{
@@ -229,15 +232,29 @@ export default function OpeningPrelude({ onFinish }) {
             <div className="drum-foreground">
               <img src={DRUM_IMAGE} alt="正面朝向观众的鼓" draggable="false" />
               <canvas ref={canvas} className="drum-wave" width={1376} height={768} aria-hidden="true" />
-              <button className="drum-hit-area" type="button" aria-label="击鼓" onClick={strike} />
+              <button ref={drumButton} className="drum-hit-area" type="button" aria-label="击鼓" disabled={!doorFinished} onClick={strike} />
             </div>
           </div>
         </div>
       </div>
       <div className="opening-light" aria-hidden="true" />
       <div className="opening-vignette" aria-hidden="true" />
-      <h1 className={`opening-title ${hits >= 2 ? 'opening-title-muted' : ''}`}>西市一日</h1>
-      <p className={`opening-prompt ${hits > 0 ? 'opening-prompt-hidden' : ''}`}>点击鼓面，开启你的长安故事</p>
+      <p className={`opening-prompt ${hits > 0 || !doorFinished ? 'opening-prompt-hidden' : ''}`}>点击鼓面，开启你的长安故事</p>
+      {!doorFinished && <section className={`gate-screen gate-overlay ${gateStarted ? 'gate-started' : ''} ${gateFading ? 'gate-fading' : ''}`} aria-label="西市一日，开门入市">
+        <div className="gate-film-frame">
+        <video ref={gateVideo} className="gate-video" src={GATE_VIDEO} muted playsInline preload="auto"
+          onTimeUpdate={(event) => setGateTitleOpacity(Math.max(0, 1 - (event.currentTarget.currentTime - 0.6) / 2))}
+          onEnded={finishGate} onError={() => { gateFailed.current = true; if (gateStarted) finishGate() }}
+          aria-label="开门入市" />
+        <div className="gate-vignette" aria-hidden="true" />
+        <div className="gate-film-heading" style={{ opacity: Math.min(1, gateTitleOpacity) }}>
+          <h1 className="gate-film-title">西市一日</h1>
+          <p className="gate-film-brand">《大唐西市》</p>
+        </div>
+        <button className="gate-enter" type="button" disabled={gateStarted} onClick={enterMarket}>进入西市</button>
+        </div>
+        {gateStarted && !gateFading && <button className="gate-skip" type="button" onClick={finishGate}>跳过开场</button>}
+      </section>}
       <div className="opening-fade" aria-hidden="true" />
     </main>
   )
