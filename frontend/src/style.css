@@ -119,16 +119,17 @@ button:focus-visible { outline: 2px solid #dfc697; outline-offset: 4px; }
 .gate-skip { position: absolute; right: 24px; bottom: max(24px, env(safe-area-inset-bottom)); padding: 12px 16px; min-height: 44px; border: 0; border-bottom: 1px solid rgba(239, 231, 216, .45); border-radius: 0; background: rgba(5, 4, 3, .5); color: var(--paper); font-size: .85rem; }
 .gate-skip:hover { background: rgba(5, 4, 3, .8); }
 
-/* One isolated drum pulls back over a fixed, softly focused market plate. */
+/* Full photographic scene with a quiet light over the drum skin. */
 .opening-screen { position: relative; min-height: 100svh; overflow: hidden; isolation: isolate; background: #070706; }
 .opening-artwork { position: absolute; left: 50%; top: 50%; width: max(100vw, 179.167svh); aspect-ratio: 1376 / 768; transform: translate(-50%, -50%); }
-.opening-market, .drum-shake, .drum-camera, .drum-foreground { position: absolute; inset: 0; }
-.opening-market { background-size: 100% 100%; opacity: var(--market-opacity); filter: blur(13px) brightness(.94) saturate(.82); transition: opacity var(--stage-duration) cubic-bezier(.2,.7,.2,1); }
+.drum-shake, .drum-camera, .drum-foreground { position: absolute; inset: 0; }
 .drum-shake { z-index: 1; }
-.drum-camera { transform: scale(calc(var(--drum-scale) * var(--drum-fit, 1))); transform-origin: 50% 46%; transition: transform var(--stage-duration) cubic-bezier(.2,.72,.18,1); }
+.drum-camera { transform: scale(var(--drum-scale)); transform-origin: 48% 47%; transition: transform var(--stage-duration) cubic-bezier(.2,.72,.18,1); }
+.opening-leaving .drum-camera { transform: scale(.975); transition-duration: .9s; }
 .drum-foreground img { display: block; width: 100%; height: 100%; filter: brightness(var(--scene-exposure)) saturate(.82); transition: filter var(--stage-duration) ease-out; user-select: none; pointer-events: none; }
 .drum-wave { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.drum-hit-area { position: absolute; left: 34.1%; top: 18.9%; width: 30.8%; height: 57.9%; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+.drum-foreground::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 17% 36% at 48% 47%, rgba(255, 218, 147, .16), transparent 90%); mix-blend-mode: soft-light; pointer-events: none; animation: drumBreath 4.8s ease-in-out infinite; }
+.drum-hit-area { position: absolute; left: 30.7%; top: 10.9%; width: 34.3%; height: 72.4%; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
 .drum-hit-area:hover { background: rgba(241, 226, 194, .055); }
 .drum-hit-area:focus-visible { outline: 1px solid rgba(224, 198, 144, .7); outline-offset: 3px; }
 .drum-impact-1 { animation: drumTremorOne .2s ease-out; }
@@ -139,14 +140,21 @@ button:focus-visible { outline: 2px solid #dfc697; outline-offset: 4px; }
 .opening-camera-3 { animation: openingCameraThree .28s ease-out; }
 .opening-light, .opening-vignette { position: absolute; z-index: 2; inset: 0; pointer-events: none; }
 .opening-light { background: linear-gradient(115deg, rgba(240, 235, 219, .06), transparent 58%); mix-blend-mode: soft-light; opacity: var(--scene-exposure); transition: opacity var(--stage-duration) ease-out; }
-.opening-vignette { background: radial-gradient(ellipse 66% 72% at 50% 45%, transparent 38%, rgba(9, 7, 6, .1) 75%, rgba(6, 5, 5, .2) 100%); }
+.opening-vignette { background: radial-gradient(ellipse 52% 72% at 48% 46%, transparent 30%, rgba(9, 7, 6, .2) 68%, rgba(6, 5, 5, .55) 100%); }
 .opening-title, .opening-prompt { position: absolute; z-index: 3; left: 50%; margin: 0; color: #eee5d6; font-family: "Songti SC", "SimSun", serif; text-align: center; text-shadow: 0 2px 16px #000; transform: translateX(-50%); pointer-events: none; }
 .opening-title { top: clamp(24px, 7vh, 70px); font-size: clamp(1.6rem, 3vw, 3.2rem); font-weight: 400; letter-spacing: .23em; white-space: nowrap; transition: opacity .45s ease; }
 .opening-title-muted { opacity: .78; }
-.opening-prompt { bottom: clamp(36px, 8vh, 84px); font-size: clamp(.9rem, 1.5vw, 1.25rem); letter-spacing: .14em; white-space: nowrap; transition: opacity .32s ease; }
-.opening-prompt-hidden, .opening-leaving .opening-title { opacity: 0; }
-.opening-fade { position: absolute; z-index: 5; inset: 0; background: #050504; opacity: 0; pointer-events: none; transition: opacity .73s ease-in; }
+.opening-prompt { bottom: clamp(26px, 5vh, 56px); padding: 10px 18px; font-size: clamp(.9rem, 1.5vw, 1.25rem); letter-spacing: .24em; white-space: nowrap; transition: opacity .32s ease; animation: promptBreath 4.8s ease-in-out infinite; }
+.opening-prompt-hidden, .opening-leaving .opening-title { opacity: 0; animation: none; }
+.opening-fade { position: absolute; z-index: 5; inset: 0; background: #050504; opacity: 0; pointer-events: none; transition: opacity .9s ease-in-out; }
 .opening-leaving .opening-fade { opacity: 1; }
+@keyframes drumBreath { 0%, 100% { opacity: .25; } 50% { opacity: .65; } }
+@keyframes promptBreath { 0%, 100% { opacity: .65; } 50% { opacity: .95; } }
+@media (prefers-reduced-motion: reduce) {
+  .drum-foreground::after, .opening-prompt { animation: none; }
+  .drum-camera { transition: none; }
+  .drum-impact-1, .drum-impact-2, .drum-impact-3, .opening-camera-1, .opening-camera-2, .opening-camera-3 { animation: none; }
+}
 @keyframes drumTremorOne { 0%, 100% { transform: translate(0); } 35% { transform: translate(1px, -1px); } 70% { transform: translate(-1px, 1px); } }
 @keyframes drumTremorTwo { 0%, 100% { transform: translate(0); } 25% { transform: translate(2px, -1px); } 55% { transform: translate(-2px, 1px); } 80% { transform: translate(1px, -1px); } }
 @keyframes drumTremorThree { 0%, 100% { transform: translate(0); } 20% { transform: translate(4px, -2px); } 45% { transform: translate(-4px, 2px); } 70% { transform: translate(3px, -1px); } 85% { transform: translate(-2px, 1px); } }
@@ -378,7 +386,6 @@ button:focus-visible { outline: 2px solid #dfc697; outline-offset: 4px; }
   .poster-content { width: min(100% - 32px, 560px); }
   .poster-title { letter-spacing: .07em; }
   .opening-prompt { bottom: 7vh; font-size: .82rem; letter-spacing: .08em; }
-  .opening-screen { --drum-fit: .75; }
   .selection-screen { justify-content: flex-start; gap: 28px; padding: 72px 22px 42px; }
   .route-grid { grid-template-columns: 1fr; max-width: 560px; }
   .route-card { min-height: 175px; padding: 22px; }
@@ -395,9 +402,6 @@ button:focus-visible { outline: 2px solid #dfc697; outline-offset: 4px; }
   .choice-overlay { max-height: 47%; padding: 40px 16px 24px; }
   .choice-option { min-height: 48px; padding: 10px 12px; font-size: .85rem; }
   .cinema-placeholder::before { inset: 14px; }
-}
-@media (max-width: 520px) and (orientation: portrait) {
-  .opening-screen { --drum-fit: .54; }
 }
 @media (max-width: 400px) {
   .stage-meta { max-width: 85px; }
